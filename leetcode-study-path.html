@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Path — Beginner LeetCode Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#10141a;
+    --surface:#171d26;
+    --surface-2:#1d2530;
+    --line:#2a3341;
+    --text:#e6e9ef;
+    --muted:#8a94a6;
+    --muted-2:#5c6577;
+    --accent:#d4a24c;
+    --accent-dim:#8a6c33;
+    --easy:#4fd1a5;
+    --easy-dim:#245c48;
+    --medium:#f2b134;
+    --medium-dim:#7a5a19;
+    --hard:#ef6461;
+    --hard-dim:#7a2f2d;
+    --font-display:'IBM Plex Mono', monospace;
+    --font-body:'IBM Plex Sans', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{background:var(--accent-dim);color:var(--text);}
+
+  a{color:inherit;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(16,20,26,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding:18px 28px;
+  }
+  .topbar-inner{
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .eyebrow{
+    font-family:var(--font-display);
+    font-size:11px;
+    letter-spacing:0.08em;
+    color:var(--accent);
+    opacity:0.85;
+  }
+  .brand h1{
+    margin:0;
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:0.02em;
+  }
+  .brand h1 span{color:var(--muted-2);font-weight:400;}
+
+  .overall{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:260px;
+  }
+  .overall-stats{
+    font-family:var(--font-display);
+    font-size:12.5px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .overall-stats b{color:var(--text);font-weight:600;}
+  .bar-track{
+    flex:1;
+    height:6px;
+    background:var(--surface-2);
+    border-radius:4px;
+    overflow:hidden;
+    min-width:120px;
+    border:1px solid var(--line);
+  }
+  .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--accent-dim), var(--accent));
+    width:0%;
+    transition:width 0.4s ease;
+  }
+  .save-indicator{
+    font-family:var(--font-display);
+    font-size:11px;
+    color:var(--easy);
+    opacity:0;
+    transition:opacity 0.3s ease;
+    white-space:nowrap;
+  }
+  .save-indicator.show{opacity:0.85;}
+
+  /* ---------- Layout ---------- */
+  .layout{
+    max-width:1180px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:230px 1fr;
+    gap:36px;
+    padding:32px 28px 80px;
+    align-items:start;
+  }
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr;}
+    .sidebar{position:static;order:2;}
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    position:sticky;
+    top:92px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    max-height:calc(100vh - 120px);
+    overflow-y:auto;
+    padding-right:6px;
+  }
+  .sidebar::-webkit-scrollbar{width:5px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    border:1px solid transparent;
+    text-decoration:none;
+    color:var(--muted);
+  }
+  .nav-item:hover{background:var(--surface);color:var(--text);}
+  .nav-item.active{background:var(--surface-2);border-color:var(--line);color:var(--text);}
+  .nav-num{
+    font-family:var(--font-display);
+    font-size:10.5px;
+    color:var(--muted-2);
+    width:18px;
+    flex-shrink:0;
+  }
+  .nav-label{font-size:13px;flex:1;line-height:1.3;}
+  .nav-frac{
+    font-family:var(--font-display);
+    font-size:10.5px;
+    color:var(--muted-2);
+    flex-shrink:0;
+  }
+  .nav-item.complete .nav-frac{color:var(--easy);}
+  .nav-item.complete .nav-dot{background:var(--easy);}
+
+  /* ---------- Main ---------- */
+  .intro{
+    font-family:var(--font-body);
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:28px;
+    max-width:640px;
+  }
+  .intro code{
+    font-family:var(--font-display);
+    background:var(--surface-2);
+    padding:1px 6px;
+    border-radius:4px;
+    color:var(--accent);
+    font-size:12.5px;
+  }
+
+  .topic{
+    margin-bottom:44px;
+    scroll-margin-top:100px;
+  }
+  .topic-head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:4px;
+    flex-wrap:wrap;
+  }
+  .topic-num{
+    font-family:var(--font-display);
+    font-size:13px;
+    color:var(--muted-2);
+  }
+  .topic-title{
+    font-family:var(--font-display);
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:0.01em;
+  }
+  .topic-stats{
+    font-family:var(--font-display);
+    font-size:11px;
+    color:var(--muted-2);
+    margin-left:auto;
+  }
+  .topic-pattern{
+    font-family:var(--font-display);
+    font-size:11.5px;
+    color:var(--muted-2);
+    margin-bottom:16px;
+  }
+  .topic-pattern .p-e{color:var(--easy);}
+  .topic-pattern .p-m{color:var(--medium);}
+  .topic-pattern .p-h{color:var(--hard);}
+
+  /* commit rail list */
+  .qlist{
+    position:relative;
+    padding-left:26px;
+  }
+  .qlist::before{
+    content:"";
+    position:absolute;
+    left:7px;
+    top:14px;
+    bottom:14px;
+    width:1px;
+    background:var(--line);
+  }
+  .qrow{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:9px 12px 9px 10px;
+    border-radius:8px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    margin-bottom:6px;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .qrow:hover{border-color:var(--muted-2);}
+  .qrow.checked{background:var(--surface-2);}
+
+  .dot{
+    position:absolute;
+    left:-26px;
+    top:50%;
+    transform:translateY(-50%);
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--muted-2);
+    z-index:1;
+  }
+  .qrow[data-diff="Easy"] .dot{border-color:var(--easy-dim);}
+  .qrow[data-diff="Medium"] .dot{border-color:var(--medium-dim);}
+  .qrow[data-diff="Hard"] .dot{border-color:var(--hard-dim);}
+  .qrow.checked[data-diff="Easy"] .dot{background:var(--easy);border-color:var(--easy);}
+  .qrow.checked[data-diff="Medium"] .dot{background:var(--medium);border-color:var(--medium);}
+  .qrow.checked[data-diff="Hard"] .dot{background:var(--hard);border-color:var(--hard);}
+
+  .chk{
+    appearance:none;
+    -webkit-appearance:none;
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+    border:1.5px solid var(--muted-2);
+    border-radius:4px;
+    background:transparent;
+    cursor:pointer;
+    position:relative;
+    font-family:var(--font-display);
+  }
+  .chk:checked{
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+  .chk:checked::after{
+    content:"✓";
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-52%);
+    font-size:12px;
+    color:#161311;
+    font-weight:700;
+  }
+
+  .qidx{
+    font-family:var(--font-display);
+    font-size:11px;
+    color:var(--muted-2);
+    width:16px;
+    flex-shrink:0;
+  }
+
+  .qtitle{
+    flex:1;
+    font-size:14px;
+    text-decoration:none;
+    color:var(--text);
+  }
+  .qtitle:hover{color:var(--accent);text-decoration:underline;}
+  .qrow.checked .qtitle{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line);}
+
+  .tag{
+    font-family:var(--font-display);
+    font-size:10.5px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    padding:3px 8px;
+    border-radius:20px;
+    flex-shrink:0;
+    border:1px solid transparent;
+  }
+  .tag.Easy{color:var(--easy);border-color:var(--easy-dim);background:rgba(79,209,165,0.08);}
+  .tag.Medium{color:var(--medium);border-color:var(--medium-dim);background:rgba(242,177,52,0.08);}
+  .tag.Hard{color:var(--hard);border-color:var(--hard-dim);background:rgba(239,100,97,0.08);}
+
+  .ext{
+    font-size:11px;
+    color:var(--muted-2);
+    flex-shrink:0;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 28px 60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .footer-note{
+    font-family:var(--font-display);
+    font-size:11.5px;
+    color:var(--muted-2);
+  }
+  .reset-btn{
+    font-family:var(--font-display);
+    font-size:12px;
+    color:var(--hard);
+    background:transparent;
+    border:1px solid var(--hard-dim);
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{background:rgba(239,100,97,0.08);}
+
+  .loading{
+    max-width:1180px;
+    margin:0 auto;
+    padding:60px 28px;
+    font-family:var(--font-display);
+    color:var(--muted);
+    font-size:13px;
+  }
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="eyebrow">$ init beginner-track</div>
+      <h1>DSA_PATH<span>.checklist</span></h1>
+    </div>
+    <div class="overall">
+      <div class="overall-stats"><b id="overallCount">0/75</b> solved · <span id="overallPct">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="overallBar"></div></div>
+      <div class="save-indicator" id="saveIndicator">saved ✓</div>
+    </div>
+  </div>
+</div>
+
+<div id="loading" class="loading">loading progress…</div>
+
+<div id="app" class="hidden">
+  <div class="layout">
+    <nav class="sidebar" id="sidebar"></nav>
+    <main>
+      <p class="intro">
+        <code>15 topics · 75 problems</code> — solve them in order. Each block of five follows the same
+        rhythm: three easy problems to build the pattern, one medium to apply it under pressure, one hard
+        to stress-test it. Check a box and your progress is saved automatically — close the tab, come back
+        whenever, right where you left off.
+      </p>
+      <div id="topics"></div>
+    </main>
+  </div>
+  <div class="footer">
+    <div class="footer-note" id="footerNote">// progress stored locally to this artifact</div>
+    <button class="reset-btn" id="resetBtn">reset all progress</button>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  { name:"Arrays & Hashing", questions:[
+    {t:"Contains Duplicate", d:"Easy", slug:"contains-duplicate"},
+    {t:"Valid Anagram", d:"Easy", slug:"valid-anagram"},
+    {t:"Two Sum", d:"Easy", slug:"two-sum"},
+    {t:"Group Anagrams", d:"Medium", slug:"group-anagrams"},
+    {t:"First Missing Positive", d:"Hard", slug:"first-missing-positive"},
+  ]},
+  { name:"Two Pointers", questions:[
+    {t:"Valid Palindrome", d:"Easy", slug:"valid-palindrome"},
+    {t:"Merge Sorted Array", d:"Easy", slug:"merge-sorted-array"},
+    {t:"Reverse String", d:"Easy", slug:"reverse-string"},
+    {t:"3Sum", d:"Medium", slug:"3sum"},
+    {t:"Trapping Rain Water", d:"Hard", slug:"trapping-rain-water"},
+  ]},
+  { name:"Sliding Window", questions:[
+    {t:"Best Time to Buy and Sell Stock", d:"Easy", slug:"best-time-to-buy-and-sell-stock"},
+    {t:"Maximum Average Subarray I", d:"Easy", slug:"maximum-average-subarray-i"},
+    {t:"Contains Duplicate II", d:"Easy", slug:"contains-duplicate-ii"},
+    {t:"Longest Substring Without Repeating Characters", d:"Medium", slug:"longest-substring-without-repeating-characters"},
+    {t:"Minimum Window Substring", d:"Hard", slug:"minimum-window-substring"},
+  ]},
+  { name:"Stack", questions:[
+    {t:"Valid Parentheses", d:"Easy", slug:"valid-parentheses"},
+    {t:"Baseball Game", d:"Easy", slug:"baseball-game"},
+    {t:"Implement Stack using Queues", d:"Easy", slug:"implement-stack-using-queues"},
+    {t:"Evaluate Reverse Polish Notation", d:"Medium", slug:"evaluate-reverse-polish-notation"},
+    {t:"Largest Rectangle in Histogram", d:"Hard", slug:"largest-rectangle-in-histogram"},
+  ]},
+  { name:"Binary Search", questions:[
+    {t:"Binary Search", d:"Easy", slug:"binary-search"},
+    {t:"Search Insert Position", d:"Easy", slug:"search-insert-position"},
+    {t:"First Bad Version", d:"Easy", slug:"first-bad-version"},
+    {t:"Search in Rotated Sorted Array", d:"Medium", slug:"search-in-rotated-sorted-array"},
+    {t:"Median of Two Sorted Arrays", d:"Hard", slug:"median-of-two-sorted-arrays"},
+  ]},
+  { name:"Linked List", questions:[
+    {t:"Reverse Linked List", d:"Easy", slug:"reverse-linked-list"},
+    {t:"Merge Two Sorted Lists", d:"Easy", slug:"merge-two-sorted-lists"},
+    {t:"Linked List Cycle", d:"Easy", slug:"linked-list-cycle"},
+    {t:"Add Two Numbers", d:"Medium", slug:"add-two-numbers"},
+    {t:"Merge k Sorted Lists", d:"Hard", slug:"merge-k-sorted-lists"},
+  ]},
+  { name:"Trees", questions:[
+    {t:"Maximum Depth of Binary Tree", d:"Easy", slug:"maximum-depth-of-binary-tree"},
+    {t:"Invert Binary Tree", d:"Easy", slug:"invert-binary-tree"},
+    {t:"Same Tree", d:"Easy", slug:"same-tree"},
+    {t:"Binary Tree Level Order Traversal", d:"Medium", slug:"binary-tree-level-order-traversal"},
+    {t:"Binary Tree Maximum Path Sum", d:"Hard", slug:"binary-tree-maximum-path-sum"},
+  ]},
+  { name:"Heap / Priority Queue", questions:[
+    {t:"Kth Largest Element in a Stream", d:"Easy", slug:"kth-largest-element-in-a-stream"},
+    {t:"Last Stone Weight", d:"Easy", slug:"last-stone-weight"},
+    {t:"Relative Ranks", d:"Easy", slug:"relative-ranks"},
+    {t:"Kth Largest Element in an Array", d:"Medium", slug:"kth-largest-element-in-an-array"},
+    {t:"Find Median from Data Stream", d:"Hard", slug:"find-median-from-data-stream"},
+  ]},
+  { name:"Recursion & Backtracking", questions:[
+    {t:"Fibonacci Number", d:"Easy", slug:"fibonacci-number"},
+    {t:"Power of Two", d:"Easy", slug:"power-of-two"},
+    {t:"Add Digits", d:"Easy", slug:"add-digits"},
+    {t:"Subsets", d:"Medium", slug:"subsets"},
+    {t:"N-Queens", d:"Hard", slug:"n-queens"},
+  ]},
+  { name:"Graphs", questions:[
+    {t:"Find Center of Star Graph", d:"Easy", slug:"find-center-of-star-graph"},
+    {t:"Find if Path Exists in Graph", d:"Easy", slug:"find-if-path-exists-in-graph"},
+    {t:"Find the Town Judge", d:"Easy", slug:"find-the-town-judge"},
+    {t:"Number of Islands", d:"Medium", slug:"number-of-islands"},
+    {t:"Word Ladder", d:"Hard", slug:"word-ladder"},
+  ]},
+  { name:"Matrix", questions:[
+    {t:"Transpose Matrix", d:"Easy", slug:"transpose-matrix"},
+    {t:"Reshape the Matrix", d:"Easy", slug:"reshape-the-matrix"},
+    {t:"Flood Fill", d:"Easy", slug:"flood-fill"},
+    {t:"Rotate Image", d:"Medium", slug:"rotate-image"},
+    {t:"Word Search II", d:"Hard", slug:"word-search-ii"},
+  ]},
+  { name:"Dynamic Programming", questions:[
+    {t:"Climbing Stairs", d:"Easy", slug:"climbing-stairs"},
+    {t:"House Robber", d:"Easy", slug:"house-robber"},
+    {t:"Min Cost Climbing Stairs", d:"Easy", slug:"min-cost-climbing-stairs"},
+    {t:"Coin Change", d:"Medium", slug:"coin-change"},
+    {t:"Regular Expression Matching", d:"Hard", slug:"regular-expression-matching"},
+  ]},
+  { name:"Greedy", questions:[
+    {t:"Best Time to Buy and Sell Stock II", d:"Easy", slug:"best-time-to-buy-and-sell-stock-ii"},
+    {t:"Assign Cookies", d:"Easy", slug:"assign-cookies"},
+    {t:"Lemonade Change", d:"Easy", slug:"lemonade-change"},
+    {t:"Jump Game", d:"Medium", slug:"jump-game"},
+    {t:"Candy", d:"Hard", slug:"candy"},
+  ]},
+  { name:"Intervals", questions:[
+    {t:"Summary Ranges", d:"Easy", slug:"summary-ranges"},
+    {t:"Maximum Population Year", d:"Easy", slug:"maximum-population-year"},
+    {t:"Merge Similar Items", d:"Easy", slug:"merge-similar-items"},
+    {t:"Merge Intervals", d:"Medium", slug:"merge-intervals"},
+    {t:"Data Stream as Disjoint Intervals", d:"Hard", slug:"data-stream-as-disjoint-intervals"},
+  ]},
+  { name:"Math & Bit Manipulation", questions:[
+    {t:"Single Number", d:"Easy", slug:"single-number"},
+    {t:"Number of 1 Bits", d:"Easy", slug:"number-of-1-bits"},
+    {t:"Missing Number", d:"Easy", slug:"missing-number"},
+    {t:"Sum of Two Integers", d:"Medium", slug:"sum-of-two-integers"},
+    {t:"Maximum XOR of Two Numbers in an Array", d:"Hard", slug:"maximum-xor-of-two-numbers-in-an-array"},
+  ]},
+];
+
+const STORAGE_KEY = "dsa-path-progress-v1";
+let progress = {};
+let saveTimer = null;
+
+function readLocalProgress(){
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch (e) {
+    return null;
+  }
+}
+
+function writeLocalProgress(value){
+  try {
+    // localStorage is synchronous, so a checked box is saved before the page closes.
+    localStorage.setItem(STORAGE_KEY, value);
+  } catch (e) {
+    console.error("Could not save progress locally:", e);
+  }
+}
+
+function flattenIds(){
+  const ids = [];
+  DATA.forEach((topic, ti) => topic.questions.forEach((q, qi) => ids.push(`${ti}-${qi}`)));
+  return ids;
+}
+const ALL_IDS = flattenIds();
+
+async function loadProgress(){
+  const localValue = readLocalProgress();
+  if (localValue) {
+    try {
+      progress = JSON.parse(localValue);
+      return;
+    } catch (e) {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }
+
+  try {
+    if (!window.storage) return;
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if (res && res.value) {
+      progress = JSON.parse(res.value);
+      writeLocalProgress(res.value);
+    }
+  } catch (e) {
+    // No saved progress is available yet.
+    progress = {};
+  }
+}
+
+async function saveProgress(){
+  const value = JSON.stringify(progress);
+  writeLocalProgress(value);
+  try {
+    const result = window.storage ? await window.storage.set(STORAGE_KEY, value, false) : true;
+    if (result) flashSaved();
+  } catch (e) {
+    console.error("Could not save progress:", e);
+  }
+}
+
+function flashSaved(){
+  const el = document.getElementById("saveIndicator");
+  el.classList.add("show");
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => el.classList.remove("show"), 1200);
+}
+
+function topicCounts(ti){
+  const total = DATA[ti].questions.length;
+  let done = 0;
+  DATA[ti].questions.forEach((q, qi) => { if (progress[`${ti}-${qi}`]) done++; });
+  return { done, total };
+}
+
+function overallCounts(){
+  let done = 0;
+  ALL_IDS.forEach(id => { if (progress[id]) done++; });
+  return { done, total: ALL_IDS.length };
+}
+
+function updateOverallBar(){
+  const { done, total } = overallCounts();
+  const pct = Math.round((done/total)*100);
+  document.getElementById("overallCount").textContent = `${done}/${total}`;
+  document.getElementById("overallPct").textContent = `${pct}%`;
+  document.getElementById("overallBar").style.width = `${pct}%`;
+}
+
+function updateSidebarItem(ti){
+  const { done, total } = topicCounts(ti);
+  const navItem = document.querySelector(`.nav-item[data-ti="${ti}"]`);
+  if (!navItem) return;
+  navItem.querySelector(".nav-frac").textContent = `${done}/${total}`;
+  navItem.classList.toggle("complete", done === total);
+}
+
+function toggleQuestion(ti, qi, checked){
+  const id = `${ti}-${qi}`;
+  if (checked) progress[id] = true; else delete progress[id];
+  updateOverallBar();
+  updateSidebarItem(ti);
+  saveProgress();
+}
+
+function render(){
+  const sidebar = document.getElementById("sidebar");
+  const topicsEl = document.getElementById("topics");
+  sidebar.innerHTML = "";
+  topicsEl.innerHTML = "";
+
+  DATA.forEach((topic, ti) => {
+    // sidebar nav item
+    const navItem = document.createElement("a");
+    navItem.className = "nav-item";
+    navItem.href = `#topic-${ti}`;
+    navItem.dataset.ti = ti;
+    navItem.innerHTML = `
+      <span class="nav-num">${String(ti+1).padStart(2,"0")}</span>
+      <span class="nav-label">${topic.name}</span>
+      <span class="nav-frac">0/${topic.questions.length}</span>
+    `;
+    sidebar.appendChild(navItem);
+
+    // topic section
+    const section = document.createElement("section");
+    section.className = "topic";
+    section.id = `topic-${ti}`;
+
+    const head = document.createElement("div");
+    head.className = "topic-head";
+    head.innerHTML = `
+      <span class="topic-num">${String(ti+1).padStart(2,"0")}</span>
+      <span class="topic-title">${topic.name}</span>
+      <span class="topic-stats">${topic.questions.length} problems</span>
+    `;
+    section.appendChild(head);
+
+    const pattern = document.createElement("div");
+    pattern.className = "topic-pattern";
+    pattern.innerHTML = `// pattern: <span class="p-e">3 easy</span> → <span class="p-m">1 medium</span> → <span class="p-h">1 hard</span>`;
+    section.appendChild(pattern);
+
+    const qlist = document.createElement("div");
+    qlist.className = "qlist";
+
+    topic.questions.forEach((q, qi) => {
+      const id = `${ti}-${qi}`;
+      const checked = !!progress[id];
+
+      const row = document.createElement("div");
+      row.className = "qrow" + (checked ? " checked" : "");
+      row.dataset.diff = q.d;
+
+      row.innerHTML = `
+        <span class="dot"></span>
+        <input type="checkbox" class="chk" ${checked ? "checked" : ""} aria-label="Mark ${q.t} as solved">
+        <span class="qidx">${qi+1}.</span>
+        <a class="qtitle" href="https://leetcode.com/problems/${q.slug}/" target="_blank" rel="noopener">${q.t}</a>
+        <span class="tag ${q.d}">${q.d}</span>
+        <span class="ext">↗</span>
+      `;
+
+      const chk = row.querySelector(".chk");
+      chk.addEventListener("change", () => {
+        row.classList.toggle("checked", chk.checked);
+        toggleQuestion(ti, qi, chk.checked);
+      });
+
+      qlist.appendChild(row);
+    });
+
+    section.appendChild(qlist);
+    topicsEl.appendChild(section);
+  });
+
+  // initialize sidebar fractions + overall bar
+  DATA.forEach((_, ti) => updateSidebarItem(ti));
+  updateOverallBar();
+  setupScrollSpy();
+}
+
+function setupScrollSpy(){
+  const sections = Array.from(document.querySelectorAll(".topic"));
+  const navItems = Array.from(document.querySelectorAll(".nav-item"));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id.replace("topic-", "");
+        navItems.forEach(n => n.classList.toggle("active", n.dataset.ti === id));
+      }
+    });
+  }, { rootMargin: "-15% 0px -70% 0px" });
+  sections.forEach(s => observer.observe(s));
+}
+
+async function resetProgress(){
+  if (!confirm("This clears every checked box. Continue?")) return;
+  progress = {};
+  localStorage.removeItem(STORAGE_KEY);
+  try {
+    if (window.storage) await window.storage.set(STORAGE_KEY, JSON.stringify(progress), false);
+    flashSaved();
+  } catch (e) {
+    console.error("Could not reset progress:", e);
+  }
+  render();
+}
+
+async function init(){
+  await loadProgress();
+  document.getElementById("loading").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  render();
+  document.getElementById("resetBtn").addEventListener("click", resetProgress);
+}
+
+init();
+</script>
+
+</body>
+</html>
